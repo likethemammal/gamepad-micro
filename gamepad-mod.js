@@ -34,7 +34,27 @@
  * @author mwichary@google.com (Marcin Wichary)
  */
 
-;(function(){
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.returnExports = factory();
+    }
+}(this, function () {
+
+    var gamepadAlreadyConnected;
+
+    window.addEventListener("gamepadconnected", function(ev) {
+        console.log('Gamepad connected already');
+        gamepadAlreadyConnected = ev;
+    });
 
     var gamepadSupport = {
         // A number of typical buttons recognized by Gamepad API and mapped to
@@ -70,22 +90,20 @@
                 !!navigator.webkitGetGamepads ||
                 !!navigator.webkitGamepads;
 
-            window.gamepadSupportAvailable = gamepadSupportAvailable;
+            window.gamepadSupportAvailable = !!gamepadSupportAvailable;
 
             if (!gamepadSupportAvailable) {
                 // It doesn’t seem Gamepad API is available – show a message telling
                 // the visitor about it.
                 console.warn('Gamepads are unsupported by this browser');
             } else {
-                // Check and see if gamepadconnected/gamepaddisconnected is supported.
-                // If so, listen for those events and don't start polling until a gamepad
-                // has been connected.
-                if ('ongamepadconnected' in window) {
-                    window.addEventListener('gamepadconnected',
-                        gamepadSupport.onGamepadConnect, false);
-                    window.addEventListener('gamepaddisconnected',
-                        gamepadSupport.onGamepadDisconnect, false);
-                } else {
+                //Sometimes gamepadconnected/gamepaddisconnected won't be in window, but will exist/fire.
+                window.addEventListener('gamepadconnected',
+                    gamepadSupport.onGamepadConnect, false);
+                window.addEventListener('gamepaddisconnected',
+                    gamepadSupport.onGamepadDisconnect, false);
+
+                if (!('ongamepadconnected' in window)) {
                     // If connection events are not supported just start polling
                     gamepadSupport.startPolling();
                 }
@@ -93,14 +111,16 @@
         },
 
         dispatchUpdate: function(gamepads) {
-            var onGamepadUpdate = new Event('ongamepadupdate', gamepads);
+            var onGamepadUpdate = new CustomEvent('ongamepadupdate', {detail: gamepads});
             window.dispatchEvent(onGamepadUpdate);
+            window.gamepadSupportAvailable = true;
         },
 
         /**
          * React to the gamepad being connected.
          */
         onGamepadConnect: function(ev) {
+            console.warn('Gamepad connected');
             // Add the new gamepad on the list of gamepads to look after.
             gamepadSupport.gamepads.push(ev.gamepad);
 
@@ -115,6 +135,7 @@
          * React to the gamepad being disconnected.
          */
         onGamepadDisconnect: function(ev) {
+            console.warn('Gamepad disconnected');
             // Remove the gamepad from the list of gamepads to monitor.
             for (var i in gamepadSupport.gamepads) {
                 if (gamepadSupport.gamepads[i].index == ev.gamepad.index) {
@@ -252,4 +273,5 @@
 
     gamepadSupport.init();
 
-}());
+    return gamepadSupport;
+}));
