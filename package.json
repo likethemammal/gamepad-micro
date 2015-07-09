@@ -1,0 +1,31 @@
+{
+  "name": "gamepad-micro",
+  "version": "0.1.0",
+  "description": "Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad update events.",
+  "main": "dist/gamepad-micro.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify -t uglifyify gamepad-micro.js -s GamepadMicro > dist/gamepad-micro.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/likethemammal/gamepad-micro.git"
+  },
+  "keywords": [
+    "Gamepad",
+    "HTML5",
+    "Controller",
+    "dualshock",
+    "xbox"
+  ],
+  "author": "Chris Dolphin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/likethemammal/gamepad-micro/issues"
+  },
+  "homepage": "https://github.com/likethemammal/gamepad-micro",
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "uglifyify": "^3.0.1"
+  }
+}

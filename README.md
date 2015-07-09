@@ -1,13 +1,13 @@
 GamepadMicro
 ==============
 
-Library that interfaces with the Gamepad API and publishes gamepad update events.
+Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad update events.
 
-**(No dependencies, yay!)
+**(No dependencies, yay!)**
 
 ###Setup
 
-Just include the library, create an instance of `GamepadMicro`, and use the `onUpdate` function to register a callback for gamepad updates.
+Just include the library (from `/dist`), create an instance of `GamepadMicro`, and use the `onUpdate` function to register a callback for gamepad updates.
 
 #### Install
 
@@ -98,6 +98,7 @@ The `buttons` object on each gamepad is the list of currently pressed buttons by
  + 'dPadDown',
  + 'dPadLeft',
  + 'dPadRight'
+ + 'extra'
 
 If you're interested in seeing the mapping for the raw Gamepad API, you can find it [here](https://w3c.github.io/gamepad/#h-remapping).
 

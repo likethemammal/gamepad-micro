@@ -33,7 +33,8 @@ function GamepadMicro () {
         'dPadUp',
         'dPadDown',
         'dPadLeft',
-        'dPadRight'
+        'dPadRight',
+        'extra'
     ];
 
     this.reset();
@@ -55,7 +56,8 @@ function _newGamepad() {
         leftStick: { x: 0, y: 0 },
         rightStick: { x: 0, y: 0 },
         dPad:  { x: 0, y: 0 },
-        buttons: {}
+        buttons: {},
+        _pressed: {}
     }
 }
 
@@ -92,7 +94,7 @@ GamepadMicro.prototype._shouldRemoveEvents = function() {
 };
 
 GamepadMicro.prototype._onGamepadConnected = function(ev) {
-    var gamepad = ev.originalEvent.gamepad;
+    var gamepad = ev.gamepad;
     if (gamepad.mapping === 'standard') {
         this.gamepads[gamepad.index] = _newGamepad();
         this.gamepadconnected = true;
@@ -101,7 +103,7 @@ GamepadMicro.prototype._onGamepadConnected = function(ev) {
 };
 
 GamepadMicro.prototype._onGamepadDisconnected = function(ev) {
-    var disconnectedGamepad = ev.originalEvent.gamepad;
+    var disconnectedGamepad = ev.gamepad;
     var gamepads = this.gamepads;
 
     gamepads.forEach(function (gamepad, index, array) {
@@ -201,17 +203,16 @@ GamepadMicro.prototype._poll = function() {
         if (currentRawGamepad) {
             var rawButtons = currentRawGamepad.buttons;
             var pressedButtons = [];
-            var currentGamepad = currentGamepads[currentRawGamepad.index];
+            var currentGamepad = currentGamepads[currentRawGamepad.index] || _newGamepad();
 
             for (var k = 0, len = buttonNames.length; k < len; k++) {
 
                 var name = buttonNames[k];
-                var button = rawButtons[name];
-                var wasDown = !!currentGamepad.buttons[name];
-                var isDown = button = _buttonPressed(currentRawGamepad, k);
+                var wasDown = !!currentGamepad._pressed[name];
+                var isDown = currentGamepad._pressed[name] = _buttonPressed(currentRawGamepad, k);
 
                 if (wasDown && !isDown) {
-                    pressedButtons.push(name);
+                    pressedButtons[name] = true;
                 }
             }
 
@@ -224,8 +225,8 @@ GamepadMicro.prototype._poll = function() {
             currentGamepad.rightStick.y = currentRawGamepad.axes[3];
 
             // dpad isn't a true stick, infer from buttons
-            currentGamepad.dpad.x = (currentGamepad.buttons.dpadLeft ? -1 : 0) + (currentGamepad.buttons.dpadRight ? 1 : 0);
-            currentGamepad.dpad.y = (currentGamepad.buttons.dpadUp ? -1 : 0) + (currentGamepad.buttons.dpadDown ? 1 : 0);
+            currentGamepad.dPad.x = (currentGamepad.buttons.dPadLeft ? -1 : 0) + (currentGamepad.buttons.dPadRight ? 1 : 0);
+            currentGamepad.dPad.y = (currentGamepad.buttons.dPadUp ? -1 : 0) + (currentGamepad.buttons.dPadDown ? 1 : 0);
 
 
             this.gamepads[currentRawGamepad.index] = currentGamepad;
@@ -244,7 +245,7 @@ GamepadMicro.prototype._setupPoll = function() {
 };
 
 GamepadMicro.prototype._tick = function() {
-    var tickFunc = GamepadMicro.prototype._tick;
+    var tickFunc = GamepadMicro.prototype._tick.bind(this);
 
     this._poll();
 
