@@ -2,7 +2,7 @@
   "name": "gamepad-micro",
   "version": "0.1.0",
   "description": "Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad update events.",
-  "main": "dist/gamepad-micro.js",
+  "main": "dist/gamepad-micro.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify -t uglifyify gamepad-micro.js -s GamepadMicro > dist/gamepad-micro.min.js"

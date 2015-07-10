@@ -5,7 +5,7 @@ Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad u
 
 **(No dependencies, yay!)**
 
-###Setup
+### Setup
 
 Just include the library (from `/dist`), create an instance of `GamepadMicro`, and use the `onUpdate` function to register a callback for gamepad updates.
 
@@ -108,14 +108,12 @@ Support for the Gamepad API can be retrieved directly from GamepadMicro
 
 ```js
 gp.gamepadSupported //returns bool
-
 ```
 
 Whether a gamepad is connected or not is also available at all times from GamepadMicro
 
 ```js
 gp.gamepadConnected //returns bool
-
 ```
 
 ### Troubleshooting
