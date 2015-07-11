@@ -12,9 +12,10 @@
     "url": "https://github.com/likethemammal/gamepad-micro.git"
   },
   "keywords": [
+    "gamepad",
     "Gamepad",
     "HTML5",
-    "Controller",
+    "controller",
     "dualshock",
     "xbox"
   ],

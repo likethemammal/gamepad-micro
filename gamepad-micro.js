@@ -201,8 +201,7 @@ GamepadMicro.prototype._poll = function() {
         var currentRawGamepad = rawGamepads[i];
 
         if (currentRawGamepad) {
-            var rawButtons = currentRawGamepad.buttons;
-            var pressedButtons = [];
+            var pressedButtons = {};
             var currentGamepad = currentGamepads[currentRawGamepad.index] || _newGamepad();
 
             for (var k = 0, len = buttonNames.length; k < len; k++) {
@@ -227,7 +226,6 @@ GamepadMicro.prototype._poll = function() {
             // dpad isn't a true stick, infer from buttons
             currentGamepad.dPad.x = (currentGamepad.buttons.dPadLeft ? -1 : 0) + (currentGamepad.buttons.dPadRight ? 1 : 0);
             currentGamepad.dPad.y = (currentGamepad.buttons.dPadUp ? -1 : 0) + (currentGamepad.buttons.dPadDown ? 1 : 0);
-
 
             this.gamepads[currentRawGamepad.index] = currentGamepad;
 
