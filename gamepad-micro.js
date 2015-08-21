@@ -46,14 +46,12 @@ GamepadMicro.prototype.reset = function() {
     this._connectionListening = false;
     this._updateCallback = function() {};
     this._prevRawGamepadTypes = [];
-    this._prevPressedButtonsByGamepad = [];
     this.gamepadconnected = _getRawGamepads.length > 0;
     this.gamepadConnected = !!this.gamepadconnected;
     this.gamepadSupported = !!_gamepadSupported();
     this.gamepads = [];
-    this._counter = 0;
-    this._heldButtonDelay = 10;
-    this._checkForHeld = false;
+    this._heldButtonDelay = 200;
+    this._heldTimestampByGamepad = {};
 };
 
 function _newGamepad() {
@@ -113,7 +111,7 @@ GamepadMicro.prototype._onGamepadDisconnected = function(ev) {
     var disconnectedGamepad = ev.gamepad;
     var gamepads = this.gamepads;
 
-    gamepads.forEach(function (gamepad, index, array) {
+    gamepads.forEach(function (gamepad, index) {
         if (index === disconnectedGamepad.index) {
             gamepads.splice(index, 1);
         }
@@ -221,10 +219,9 @@ GamepadMicro.prototype._poll = function() {
             this._prevRawGamepadTypes[gamepadIndex] = typeof currentGamepad;
         }
 
-        var pressedButtons = [];
-        var prevPressedButtons = this._prevPressedButtonsByGamepad[gamepadIndex] || {};
         var activeButtons = {};
         var currentGamepad = currentGamepads[gamepadIndex] || _newGamepad();
+        var heldTimestamps = this._heldTimestampByGamepad[gamepadIndex] || {};
 
         for (var k = 0, len = buttonNames.length; k < len; k++) {
 
@@ -234,30 +231,30 @@ GamepadMicro.prototype._poll = function() {
 
             if (wasDown && !isDown) {
                 activeButtons[name] = {
-                    'pressed': true
+                    'released': true,
+                    'held': false
                 };
-            } else if (isDown) {
-                pressedButtons[name] = true;
-            }
-        }
 
-        if (this._checkForHeld) {
-            for (var buttonName in pressedButtons) {
-                if (pressedButtons.hasOwnProperty(buttonName)) {
-                    var isHeld = prevPressedButtons[buttonName];
-
-                    if (!isHeld) {
-                        continue;
-                    }
-
-                    activeButtons[buttonName] = {
-                        'held': true
-                    }
+                if (heldTimestamps) {
+                    heldTimestamps[name] = false;
                 }
+
+            } else if (isDown) {
+
+                if (heldTimestamps[name]) {
+                    if (currentRawGamepad.timestamp > heldTimestamps[name] + this._heldButtonDelay) {
+                        activeButtons[name] = {
+                            'held': true
+                        };
+                    }
+                } else {
+                    heldTimestamps[name] = currentRawGamepad.timestamp;
+                }
+
             }
         }
 
-        this._prevPressedButtonsByGamepad[gamepadIndex] = pressedButtons;
+        this._heldTimestampByGamepad[gamepadIndex] = heldTimestamps;
 
         currentGamepad.timestamp = currentRawGamepad.timestamp;
         currentGamepad.buttons = activeButtons;
@@ -288,15 +285,8 @@ GamepadMicro.prototype._setupPoll = function() {
 
 GamepadMicro.prototype._tick = function() {
     var tickFunc = GamepadMicro.prototype._tick.bind(this);
-    var isPastHeldDelay = this._counter % this._heldButtonDelay === 0;
-
-    if (this.gamepadconnected && isPastHeldDelay) {
-        this._checkForHeld = true;
-    }
 
     this._poll();
-    this._counter++;
-    this._checkForHeld = false;
 
     if (this._ticking) {
         if (window.requestAnimationFrame) {
