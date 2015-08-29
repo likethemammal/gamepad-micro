@@ -7,7 +7,7 @@ Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad u
 
 ### Setup
 
-Just include the library (from `/dist` or on [npm](https://www.npmjs.com/package/daisywheel)), create an instance of `GamepadMicro`, and use the `onUpdate` function to register a callback for gamepad updates.
+Just include the library (from `/dist` or on [npm](https://www.npmjs.com/package/gamepad-micro)), create an instance of `GamepadMicro`, and use the `onUpdate` function to register a callback for gamepad updates.
 
 #### Install
 
