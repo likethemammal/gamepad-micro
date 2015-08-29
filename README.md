@@ -71,12 +71,23 @@ Each gamepad object looks something like the following
     leftStick: { x: 0, y: 0 },
     rightStick: { x: 0, y: 0 },
     dPad:  { x: 0, y: 0 },
-    buttons: {}
+    buttons: {
+    	rightTrigger: {
+    	    released: true,
+    	    held: false
+    	}
+        actionNorth: {
+    	    released: false,
+    	    held: true
+    	}
+    }
 }
 ```
  + **leftStick/rightStick**: The axes for the analog sticks on the gamepad. Both `x` and `y` range between 1 and -1.
  + **dPad**: The Dpad buttons mapped to axes, if you want them. Otherwise you can get the Dpad values from `buttons`.
- + **buttons**: List of all the buttons pressed. Details below.
+ + **buttons**: List of all the buttons `released` and `held`.
+  + `released`: Is **true** once, after the button is pressed, think of this as onKeyUp.
+  + `held`: Is **true** as long as the button is held down, will be **false** when `released` is set.
 
 ### Buttons
 
@@ -118,4 +129,4 @@ gp.gamepadConnected //returns bool
 
 ### Troubleshooting
 
-This library obviously requires browser support for the Gamepad API. There is a helpful tester for troubleshooting gamepad connections [here](html5rocks.com/en/tutorials/doodles/gamepad/gamepad-tester/tester.html).
+This library obviously requires browser support for the Gamepad API. There is a helpful tester for troubleshooting gamepad connections [here](http://html5rocks.com/en/tutorials/doodles/gamepad/gamepad-tester/tester.html).
