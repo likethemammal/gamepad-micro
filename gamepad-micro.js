@@ -171,13 +171,15 @@ GamepadMicro.prototype._checkForGamepadChange = function() {
     for (var i = 0; i < rawGamepads.length; i++) {
         var gamepad = rawGamepads[i];
         var heldTimestamps;
+        var hasBeenHeld;
 
         if (!gamepad.timestamp) {
             continue;
         }
 
         gamepadIndex = gamepad.index;
-        heldTimestamps = this._heldTimestampByGamepad[gamepadIndex];
+        heldTimestamps = this._heldTimestampByGamepad[gamepadIndex] || {};
+        hasBeenHeld = Object.keys(heldTimestamps).length === 0;
 
         // Don’t do anything if the current timestamp is the same as previous
         // one, which means that the state of the gamepad hasn’t changed.
@@ -185,7 +187,7 @@ GamepadMicro.prototype._checkForGamepadChange = function() {
         // makes sure we’re not doing anything if the timestamps are empty
         // or undefined.
 
-        if (gamepad.timestamp === this._prevTimestamps[gamepadIndex] && Object.keys(heldTimestamps).length === 0) {
+        if (gamepad.timestamp === this._prevTimestamps[gamepadIndex] && hasBeenHeld) {
             continue;
         }
 
@@ -209,7 +211,6 @@ GamepadMicro.prototype._poll = function() {
     this.gamepadConnected = true;
     this.gamepadSupported = true;
 
-    var gamepadsChanged = false;
     var currentGamepads = this.gamepads;
     var buttonNames = this._buttonNames;
 
@@ -222,7 +223,6 @@ GamepadMicro.prototype._poll = function() {
 
         //Gamepad(s) has changed
         if (typeof currentRawGamepad != this._prevRawGamepadTypes[gamepadIndex]) {
-            gamepadsChanged = true;
             this._prevRawGamepadTypes[gamepadIndex] = typeof currentGamepad;
         }
 
@@ -233,6 +233,8 @@ GamepadMicro.prototype._poll = function() {
         for (var k = 0, len = buttonNames.length; k < len; k++) {
 
             var name = buttonNames[k];
+            var heldTimestamp = heldTimestamps[name];
+            var isSameTimestamp = heldTimestamp === currentRawGamepad.timestamp;
             var wasDown = !!currentGamepad._pressed[name];
             var isDown = currentGamepad._pressed[name] = _buttonPressed(currentRawGamepad, k);
 
@@ -248,8 +250,8 @@ GamepadMicro.prototype._poll = function() {
 
             } else if (isDown) {
 
-                if (heldTimestamps[name]) {
-                    if (currentRawGamepad.timestamp > heldTimestamps[name] + this._heldButtonDelay) {
+                if (heldTimestamp) {
+                    if (isSameTimestamp || currentRawGamepad.timestamp > heldTimestamps[name] + this._heldButtonDelay) {
                         activeButtons[name] = {
                             'held': true
                         };
