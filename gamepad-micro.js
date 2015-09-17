@@ -178,6 +178,12 @@ GamepadMicro.prototype._checkForGamepadChange = function() {
         }
 
         gamepadIndex = gamepad.index;
+
+
+        // Browsers don't update the gamepad timestamp if a button remains held.
+        // This is a manual check to see if any button has been held. Since the
+        // browser would tell us if it released, we'll assume some button is
+        // still held and announce it's continued heldness.
         heldTimestamps = this._heldTimestampByGamepad[gamepadIndex] || {};
         hasBeenHeld = Object.keys(heldTimestamps).length === 0;
 
@@ -234,9 +240,10 @@ GamepadMicro.prototype._poll = function() {
 
             var name = buttonNames[k];
             var heldTimestamp = heldTimestamps[name];
-            var isSameTimestamp = heldTimestamp === currentRawGamepad.timestamp;
+            var isSameTimestamp;
             var wasDown = !!currentGamepad._pressed[name];
             var isDown = currentGamepad._pressed[name] = _buttonPressed(currentRawGamepad, k);
+            var now = Date.now();
 
             if (wasDown && !isDown) {
                 activeButtons[name] = {
@@ -251,13 +258,21 @@ GamepadMicro.prototype._poll = function() {
             } else if (isDown) {
 
                 if (heldTimestamp) {
-                    if (isSameTimestamp || currentRawGamepad.timestamp > heldTimestamps[name] + this._heldButtonDelay) {
+
+                    isSameTimestamp = heldTimestamp['gamepadTimestamp'] === currentRawGamepad.timestamp;
+
+                    //If the gamepad timestamp hasn't changed and the time is after the held delay
+                    if ((isSameTimestamp && now > heldTimestamp['browserTimestamp'] + this._heldButtonDelay) || (currentRawGamepad.timestamp > heldTimestamp['gamepadTimestamp'] + this._heldButtonDelay)) {
                         activeButtons[name] = {
                             'held': true
                         };
                     }
                 } else {
-                    heldTimestamps[name] = currentRawGamepad.timestamp;
+                    heldTimestamps[name] = {
+                        //Gamepad Timestamps are HighResTimeStamps relative when gamepad was connected
+                        'gamepadTimestamp': currentRawGamepad.timestamp,
+                        'browserTimestamp': now
+                    } ;
                 }
 
             }
