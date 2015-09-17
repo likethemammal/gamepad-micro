@@ -170,7 +170,14 @@ GamepadMicro.prototype._checkForGamepadChange = function() {
 
     for (var i = 0; i < rawGamepads.length; i++) {
         var gamepad = rawGamepads[i];
+        var heldTimestamps;
+
+        if (!gamepad.timestamp) {
+            continue;
+        }
+
         gamepadIndex = gamepad.index;
+        heldTimestamps = this._heldTimestampByGamepad[gamepadIndex];
 
         // Don’t do anything if the current timestamp is the same as previous
         // one, which means that the state of the gamepad hasn’t changed.
@@ -178,7 +185,7 @@ GamepadMicro.prototype._checkForGamepadChange = function() {
         // makes sure we’re not doing anything if the timestamps are empty
         // or undefined.
 
-        if (gamepad.timestamp && (gamepad.timestamp === this._prevTimestamps[gamepadIndex])) {
+        if (gamepad.timestamp === this._prevTimestamps[gamepadIndex] && Object.keys(heldTimestamps).length === 0) {
             continue;
         }
 
@@ -236,7 +243,7 @@ GamepadMicro.prototype._poll = function() {
                 };
 
                 if (heldTimestamps) {
-                    heldTimestamps[name] = false;
+                    delete heldTimestamps[name];
                 }
 
             } else if (isDown) {
