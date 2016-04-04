@@ -46,8 +46,7 @@ GamepadMicro.prototype.reset = function() {
     this._connectionListening = false;
     this._updateCallback = function() {};
     this._prevRawGamepadTypes = [];
-    this.gamepadconnected = _getRawGamepads.length > 0;
-    this.gamepadConnected = !!this.gamepadconnected;
+    this.gamepadConnected = _getRawGamepads.length > 0;
     this.gamepadSupported = !!_gamepadSupported();
     this.gamepads = [];
     this._heldButtonDelay = 200;
@@ -101,7 +100,7 @@ GamepadMicro.prototype._onGamepadConnected = function(ev) {
     var gamepad = ev.gamepad;
     if (gamepad.mapping === 'standard') {
         this.gamepads[gamepad.index] = _newGamepad();
-        this.gamepadconnected = true;
+        this.gamepadConnected = true;
 
         this.update();
     }
@@ -118,7 +117,7 @@ GamepadMicro.prototype._onGamepadDisconnected = function(ev) {
     });
 
     if (!gamepads.length) {
-        this.gamepadconnected = false;
+        this.gamepadConnected = false;
     }
 
     this.update();
@@ -213,7 +212,6 @@ GamepadMicro.prototype._poll = function() {
         return;
     }
 
-    this.gamepadconnected = true;
     this.gamepadConnected = true;
     this.gamepadSupported = true;
 
