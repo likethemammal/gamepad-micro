@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gamepad-Micro - Example usage page</title>
+</head>
+<body>
+
+    <h1>Gamepad-Micro Example</h1>
+
+    <p>This page is a basic implementation of the gamepad-micro library. Connect a gamepad controller to your computer and browser, and try it out!</p>
+
+    <p><a target="_blank" href="https://github.com/likethemammal/gamepad-micro/blob/master/example.html">View the source</a> to see how things are implemented.</p>
+
+    <hr />
+
+    <div id="supported"></div>
+
+    <div id="connected"></div>
+
+    <script src="gamepad-micro.js"></script>
+
+    <script>
+        (function() {
+
+        var gp = new GamepadMicro();
+        var supportEl = document.getElementById('supported');
+        var connectedEl = document.getElementById('connected');
+        var gamepadAlreadyConnected = false;
+
+        if (gp.gamepadSupported) {
+            supportEl.innerHTML = 'Your browser supports the Gamepad API';
+            supportEl.style.color = 'green';
+        } else {
+            supportEl.innerHTML = 'Your browser does not support the Gamepad API';
+            supportEl.style.color = 'red';
+        }
+
+        checkGamepadConnection();
+
+        gp.onUpdate(function(gamepads) {
+            checkGamepadConnection();
+        });
+
+        function checkGamepadConnection() {
+            if (gp.gamepadConnected) {
+                if (!gamepadAlreadyConnected) {
+                    gamepadAlreadyConnected  = true;
+                    connectedEl.innerHTML = 'A gamepad is connected';
+                    connectedEl.style.color = 'blue';
+                }
+            } else {
+                gamepadAlreadyConnected = false;
+                connectedEl.innerHTML = 'No gamepad is connected yet';
+                connectedEl.style.color = 'gray';
+            }
+        }
+
+        })();
+    </script>
+</body>
+</html>

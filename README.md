@@ -42,6 +42,10 @@ define(['gamepad-micro'], function(GamepadMicro) {
 
 ```
 
+### Example
+
+An example of basic install and setup can be found [here](http://likethemammal.github.io/gamepad-micro/example.html). The source for the example can be found [here](https://github.com/likethemammal/gamepad-micro/blob/master/example.html)
+
 ### Updates
 
 The `onUpdate` function is the main way to interface with GamepadMicro. It expects a callback, that will forward along a `gamepads` array. Look through this array to get all the [details](/#gamepads) for each gamepad.
