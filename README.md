@@ -11,7 +11,7 @@ Just include the library (from `/dist` or on [npm](https://www.npmjs.com/package
 
 #### Install
 
-GamepadMicro supports the UMD, meaing it supports install/usage through CommonJS, AMD, and globals.
+GamepadMicro supports the UMD, meaning it supports install/usage through CommonJS, AMD, and globals.
 
 ##### CommonJS
 
