@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify src/gamepad-micro.js -s GamepadMicro > dist/gamepad-micro.js; browserify -t uglifyify src/gamepad-micro.js -s GamepadMicro > dist/gamepad-micro.min.js"
   },
+  "files": [
+    "dist/gamepad-micro.min.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/likethemammal/gamepad-micro.git"
