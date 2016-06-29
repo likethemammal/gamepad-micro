@@ -3,6 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>GamepadMicro - Example usage page</title>
+
+    <style>
+
+        .button {
+            display: inline-block;
+            border: 1px solid lightgray;
+            padding: 5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            color: lightgray
+        }
+
+        .button.pressed {
+            color: green;
+            border-color: green;
+        }
+
+    </style>
+
 </head>
 <body>
 
@@ -18,7 +37,10 @@
 
     <div id="connected"></div>
 
-    <script src="dist/gamepad-micro.min.js"></script>
+    <h3>Buttons</h3>
+    <div id="buttons"></div>
+
+    <script src="dist/gamepad-micro.js"></script>
 
     <script>
         (function() {
@@ -26,11 +48,39 @@
         var gp = new GamepadMicro();
         var supportEl = document.getElementById('supported');
         var connectedEl = document.getElementById('connected');
+        var buttonsEl = document.getElementById('buttons');
         var gamepadAlreadyConnected = false;
+        var divNode;
+        var labelNode;
+        var valueNode;
+        var buttonNodes = [];
+        var valueNodes = [];
+        var directionals = [
+            'leftStick',
+            'rightStick'
+        ];
 
         if (gp.gamepadSupported) {
             supportEl.innerHTML = 'Your browser supports the Gamepad API';
             supportEl.style.color = 'green';
+
+            gp.buttonKeys.map(function (key) {
+                divNode = document.createElement('div');
+                labelNode = document.createElement('div');
+                valueNode = document.createElement('div');
+
+                divNode.className = 'button';
+
+                labelNode.innerHTML = key;
+
+                divNode.appendChild(labelNode);
+                divNode.appendChild(valueNode);
+
+                buttonsEl.appendChild(divNode);
+
+                buttonNodes[key] = divNode;
+                valueNodes[key] = valueNode;
+            });
         } else {
             supportEl.innerHTML = 'Your browser does not support the Gamepad API';
             supportEl.style.color = 'red';
@@ -40,6 +90,46 @@
 
         gp.onUpdate(function(gamepads) {
             checkGamepadConnection();
+
+            if (!gp.gamepadConnected) {
+                return;
+            }
+
+            var gamepad = gamepads[0];
+            var buttons = gamepad.buttons;
+            var buttonNode;
+
+            gp.buttonKeys.map(function(key) {
+                var button = buttons[key];
+
+                if (button && directionals.indexOf(key) === -1) {
+                    buttonNode = buttonNodes[key];
+
+                    if (button.released || button.held) {
+                        //button was pressed
+                        console.log('button pressed');
+                        buttonNode.className = 'button pressed';
+                    } else {
+                        buttonNode.className = 'button';
+                    }
+                }
+            });
+
+            directionals.map(function (key, i) {
+                var x = gamepad[key].x;
+                var y = gamepad[key].y;
+                buttonNode = buttonNodes[key];
+                console.log(x, y);
+
+                if (!x && !y) {
+                    buttonNode.className = 'button';
+                    valueNodes[key].innerHTML = 'X: ' + 0 + ' Y: ' + 0;
+                    return;
+                }
+
+                buttonNode.className = 'button pressed';
+                valueNodes[key].innerHTML = 'X: ' + x + ' Y: ' + y;
+            });
         });
 
         function checkGamepadConnection() {

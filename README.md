@@ -97,6 +97,8 @@ Each gamepad object looks something like the following
 
 The `buttons` object on each gamepad is the list of currently pressed buttons by their human-readable name. Here is the whole list of available buttons, ordered by their mapping.
 
+This list can be retrieved programmatically off of the GamepadMicro instance.
+
  + 'actionSouth',
  + 'actionEast',
  + 'actionWest',
@@ -114,6 +116,26 @@ The `buttons` object on each gamepad is the list of currently pressed buttons by
  + 'dPadLeft',
  + 'dPadRight'
  + 'extra'
+
+```js
+ //get list of button keys
+ 
+ var buttons = gamepad.buttons;
+ 
+ gp.buttonKeys.map(function() {
+    var button = buttons[key];
+    
+    if (button.released) {
+        //button was pressed
+    }
+    
+    if (button.held) {
+        //button is being held
+    }
+ });
+ 
+ ```
+ 
 
 If you're interested in seeing the mapping for the raw Gamepad API, you can find it [here](https://w3c.github.io/gamepad/#h-remapping).
 

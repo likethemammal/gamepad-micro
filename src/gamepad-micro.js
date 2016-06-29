@@ -45,7 +45,7 @@ var GamepadMicro;
         n = navigator;
 
     GamepadMicro = function() {
-        this._buttonNames = [
+        this.buttonKeys = [
             'actionSouth',
             'actionEast',
             'actionWest',
@@ -164,7 +164,7 @@ var GamepadMicro;
             this.gamepads[gamepad.index] = __newGamepad();
             this.gamepadConnected = true;
 
-            _update();
+            this._update();
         }
     };
 
@@ -182,7 +182,7 @@ var GamepadMicro;
             this.gamepadConnected = false;
         }
 
-        _update();
+        this._update();
     };
 
     _checkForGamepadChange = function() {
@@ -201,7 +201,6 @@ var GamepadMicro;
             }
 
             gamepadIndex = gamepad.index;
-
 
             // Browsers don't update the gamepad timestamp if a button remains held.
             // This is a manual check to see if any button has been held. Since the
@@ -230,7 +229,7 @@ var GamepadMicro;
     };
 
     _poll = function() {
-        var rawGamepads = _checkForGamepadChange();
+        var rawGamepads = this._checkForGamepadChange();
 
         if (!rawGamepads) {
             return;
@@ -240,7 +239,7 @@ var GamepadMicro;
         this.gamepadSupported = true;
 
         var currentGamepads = this.gamepads;
-        var buttonNames = this._buttonNames;
+        var buttonNames = this.buttonKeys;
 
         Object.keys(rawGamepads).map(function(gamepadIndex) {
             var currentRawGamepad = rawGamepads[gamepadIndex];
@@ -321,13 +320,13 @@ var GamepadMicro;
 
         }.bind(this));
 
-        _update();
+       this. _update();
     };
 
     _setupPoll = function() {
         if (!this._ticking) {
             this._ticking = true;
-            _tick();
+            this._tick();
         }
     };
 
@@ -336,12 +335,12 @@ var GamepadMicro;
     };
 
     _tick = function() {
-        _poll();
+        this._poll();
 
         if (this._ticking) {
 
             if (__requestAnimationFrame) {
-                __requestAnimationFrame(_tick);
+                __requestAnimationFrame(this._tick.bind(this));
             } else {
                 console.warn(logPrefix + 'This browser doesn\'t support requestAnimationFrame. Probably means that Gamepad API isn\'t supported either.');
             }
@@ -357,8 +356,8 @@ var GamepadMicro;
         }
 
         this._updateCallback = callback;
-        _addEvents();
-        _setupPoll();
+        this._addEvents();
+        this._setupPoll();
     };
 
     offUpdate = function() {
@@ -368,8 +367,8 @@ var GamepadMicro;
         }
 
         this._updateCallback = false;
-        _removeEvents();
-        _removePoll();
+        this._removeEvents();
+        this._removePoll();
     };
 
     prototype = GamepadMicro.prototype;
