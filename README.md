@@ -50,9 +50,9 @@ An example of basic install and setup can be found [here](http://likethemammal.g
 
 The `onUpdate` function is the main way to interface with GamepadMicro. It expects a callback, that will forward along a `gamepads` array. Look through this array to get all the [details](/#gamepads) for each gamepad.
 
-`onUpdate` fires whenever **any** Gamepad API event occurs, including 'ongamepadconnected' and 'ongamepaddisconnected'. This means, if you want to check is a gamepad has been connected, its best to check inside the update callback.
+**onUpdate: ** The callback given to `onUpdate` will fires whenever **any** Gamepad API event occurs, including 'ongamepadconnected' and 'ongamepaddisconnected'. This means, if you want to see if a gamepad has been connected, its best to check inside this callback.
 
-(Note: Checks for connection and support are available outside `onUpdate`)
+(Note: Checks for connection and support are available outside `onUpdate` as well.)
 
 ```js
 gp.onUpdate(function(gamepads) {
@@ -62,6 +62,12 @@ gp.onUpdate(function(gamepads) {
 		// Gamepad disconnected
 	}
 });
+```
+
+**offUpdate: ** Use this to clean up the gamepadconnection events and remove the `onUpdate` polling, if you're done using GamepadMicro.
+
+```js
+gp.offUpdate();
 ```
 
 ### Gamepads
@@ -100,7 +106,7 @@ Each gamepad object looks something like the following
 
 The `buttons` object on each gamepad is the list of currently pressed buttons by their human-readable name. Here is the whole list of available buttons, ordered by their mapping.
 
-This list can be retrieved programmatically off of the GamepadMicro instance.
+This list can be retrieved programmatically off of the GamepadMicro instance from the `buttonKeys` array.
 
  + 'actionSouth',
  + 'actionEast',
