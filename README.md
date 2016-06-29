@@ -78,10 +78,12 @@ Each gamepad object looks something like the following
     buttons: {
     	rightTrigger: {
     	    released: true,
+    	    pressed: false
     	    held: false
     	}
         actionNorth: {
     	    released: false,
+    	    pressed: false,
     	    held: true
     	}
     }
@@ -89,8 +91,9 @@ Each gamepad object looks something like the following
 ```
  + **leftStick/rightStick**: The axes for the analog sticks on the gamepad. Both `x` and `y` range between 1 and -1.
  + **dPad**: The Dpad buttons mapped to axes, if you want them. Otherwise you can get the Dpad values from `buttons`.
- + **buttons**: List of all the buttons `released` and `held`.
+ + **buttons**: List of all the buttons `released`, `pressed`, `held`. Only one state should be true at any given time for each button.
   + `released`: Is **true** once, after the button is pressed, think of this as onKeyUp.
+  + `pressed`: Is **true** as a button is pressed, will be **false** when `released` is set.
   + `held`: Is **true** as long as the button is held down, will be **false** when `released` is set.
 
 ### Buttons
@@ -126,7 +129,11 @@ This list can be retrieved programmatically off of the GamepadMicro instance.
     var button = buttons[key];
     
     if (button.released) {
-        //button was pressed
+        //button was either pressed or held, and has now been released
+    }
+    
+    if (button.pressed) {
+        //button is being pressed, run desired action on release
     }
     
     if (button.held) {

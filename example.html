@@ -40,7 +40,7 @@
     <h3>Buttons</h3>
     <div id="buttons"></div>
 
-    <script src="dist/gamepad-micro.js"></script>
+    <script src="dist/gamepad-micro.min.js"></script>
 
     <script>
         (function() {
@@ -105,11 +105,11 @@
                 if (button && directionals.indexOf(key) === -1) {
                     buttonNode = buttonNodes[key];
 
-                    if (button.released || button.held) {
-                        //button was pressed
-                        console.log('button pressed');
+                    if (button.pressed || button.held) {
                         buttonNode.className = 'button pressed';
-                    } else {
+                    }
+
+                    if (button.released) {
                         buttonNode.className = 'button';
                     }
                 }
@@ -119,7 +119,6 @@
                 var x = gamepad[key].x;
                 var y = gamepad[key].y;
                 buttonNode = buttonNodes[key];
-                console.log(x, y);
 
                 if (!x && !y) {
                     buttonNode.className = 'button';
