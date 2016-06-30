@@ -5,11 +5,15 @@ Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad u
 
 **(No dependencies, yay!)**
 
-### Setup
+### Example
+
+An example of basic install and setup can be found [here](http://likethemammal.github.io/gamepad-micro/example.html). The source for the example can be found [here](https://github.com/likethemammal/gamepad-micro/blob/master/example.html)
+
+## Setup
 
 Just include the library (from `/dist` or on [npm](https://www.npmjs.com/package/gamepad-micro)), create an instance of `GamepadMicro`, and use the `onUpdate` function to register a callback for gamepad updates.
 
-#### Install
+### Install
 
 GamepadMicro supports the UMD, meaning it supports install/usage through CommonJS, AMD, and globals.
 
@@ -42,11 +46,7 @@ define(['gamepad-micro'], function(GamepadMicro) {
 
 ```
 
-### Example
-
-An example of basic install and setup can be found [here](http://likethemammal.github.io/gamepad-micro/example.html). The source for the example can be found [here](https://github.com/likethemammal/gamepad-micro/blob/master/example.html)
-
-### Updates
+## Updates
 
 The `onUpdate` function is the main way to interface with GamepadMicro. It expects a callback, that will forward along a `gamepads` array. Look through this array to get all the [details](/#gamepads) for each gamepad.
 
@@ -70,7 +70,7 @@ gp.onUpdate(function(gamepads) {
 gp.offUpdate();
 ```
 
-### Gamepads
+## Gamepads
 
 The `gamepads` array returned from **onUpdate** is a list of all the gamepads connected, by their index.
 
@@ -102,7 +102,7 @@ Each gamepad object looks something like the following
   + `pressed`: Is **true** as a button is pressed, will be **false** when `released` is set.
   + `held`: Is **true** as long as the button is held down, will be **false** when `released` is set.
 
-### Buttons
+## Buttons
 
 The `buttons` object on each gamepad is the list of currently pressed buttons by their human-readable name. Here is the whole list of available buttons, ordered by their mapping.
 
@@ -152,7 +152,7 @@ This list can be retrieved programmatically off of the GamepadMicro instance fro
 
 If you're interested in seeing the mapping for the raw Gamepad API, you can find it [here](https://w3c.github.io/gamepad/#h-remapping).
 
-### Support/Connection
+## Support/Connection
 
 Support for the Gamepad API can be retrieved directly from GamepadMicro
 
@@ -166,6 +166,6 @@ Whether a gamepad is connected or not is also available at all times from Gamepa
 gp.gamepadConnected //returns bool
 ```
 
-### Troubleshooting
+## Troubleshooting
 
 This library obviously requires browser support for the Gamepad API. There is a helpful tester for troubleshooting gamepad connections [here](http://html5rocks.com/en/tutorials/doodles/gamepad/gamepad-tester/tester.html).
