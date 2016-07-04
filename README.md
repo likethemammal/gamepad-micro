@@ -7,7 +7,7 @@ Micro library that interfaces with the HTML5 Gamepad API and publishes gamepad u
 
 ### Example
 
-An example of basic install and setup can be found [here](http://likethemammal.github.io/gamepad-micro/example.html). The source for the example can be found [here](https://github.com/likethemammal/gamepad-micro/blob/master/example.html)
+An example of basic install and setup can be found in the [Live Demo](http://likethemammal.github.io/gamepad-micro/example.html). The source for the example can be found [here](https://github.com/likethemammal/gamepad-micro/blob/master/example.html)
 
 ## Setup
 
@@ -147,8 +147,7 @@ This list can be retrieved programmatically off of the GamepadMicro instance fro
     }
  });
  
- ```
- 
+```
 
 If you're interested in seeing the mapping for the raw Gamepad API, you can find it [here](https://w3c.github.io/gamepad/#h-remapping).
 
